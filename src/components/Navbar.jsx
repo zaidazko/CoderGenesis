@@ -1,6 +1,7 @@
 import React from 'react';
 import { Terminal } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
@@ -22,13 +23,15 @@ const Navbar = () => {
 
           {/* CTA */}
           <div>
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(249, 115, 22, 0.5)" }}
-              whileTap={{ scale: 0.95 }}
-              className="px-5 py-2 bg-orange-600 text-white rounded-lg font-medium text-sm hover:bg-orange-500 transition-colors shadow-[0_0_10px_rgba(249,115,22,0.3)] font-space"
-            >
-              Generate Blueprint
-            </motion.button>
+            <Link to="/playground">
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(249, 115, 22, 0.5)" }}
+                whileTap={{ scale: 0.95 }}
+                className="px-5 py-2 bg-orange-600 text-white rounded-lg font-medium text-sm hover:bg-orange-500 transition-colors shadow-[0_0_10px_rgba(249,115,22,0.3)] font-space"
+              >
+                Generate Blueprint
+              </motion.button>
+            </Link>
           </div>
         </div>
       </div>

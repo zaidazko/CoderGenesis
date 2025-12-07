@@ -1,21 +1,16 @@
 import React from "react";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Features from "./components/Features";
-import HowItWorks from "./components/HowItWorks";
-import Pricing from "./components/Pricing";
-import Footer from "./components/Footer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import Playground from "./pages/Playground";
 
 function App() {
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
-      <Navbar />
-      <Hero />
-      <Features />
-      <HowItWorks />
-      <Pricing />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/playground" element={<Playground />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

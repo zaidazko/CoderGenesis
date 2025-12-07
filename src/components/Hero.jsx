@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -42,10 +43,12 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex justify-center gap-4"
           >
-            <button className="px-8 py-4 bg-orange-600 text-white rounded-lg font-bold text-lg hover:bg-orange-500 transition-all shadow-[0_0_20px_rgba(249,115,22,0.3)] hover:shadow-[0_0_30px_rgba(249,115,22,0.5)] font-space">
-              Draft Your App Free
-            </button>
-            <button className="px-8 py-4 bg-transparent border border-white/20 text-white rounded-lg font-bold text-lg hover:bg-white/5 transition-all font-space">
+            <Link to="/playground">
+              <button className="px-8 py-4 bg-orange-600 text-white rounded-lg font-bold text-lg hover:bg-orange-500 transition-all shadow-[0_0_20px_rgba(249,115,22,0.3)] hover:shadow-[0_0_30px_rgba(249,115,22,0.5)] font-space cursor-pointer">
+                Draft Your App Free
+              </button>
+            </Link>
+            <button className="px-8 py-4 bg-transparent border border-white/20 text-white rounded-lg font-bold text-lg hover:bg-white/5 transition-all font-space cursor-pointer">
               View Demo
             </button>
           </motion.div>

@@ -19,10 +19,14 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   GripVertical,
+  DollarSign,
+  BookOpen,
 } from "lucide-react";
 import ArchitectureDiagram from "../components/ArchitectureDiagram";
 import SchemaDefinitions from "../components/SchemaDefinitions";
 import FileTree, { getFileIcon } from "../components/FileTree";
+import CostEstimator from "../components/CostEstimator";
+import ProjectManifest from "../components/ProjectManifest";
 import { useResizable, useResizablePercent } from "../hooks/useResizable";
 import { Link } from "react-router-dom";
 
@@ -165,9 +169,102 @@ CRITICAL RULES:
      → Supabase/Firebase: Rapid prototyping with built-in auth
    - **KEEP IT SIMPLE:** A 3-tier architecture (Client → API → DB) is sufficient for 90% of MVPs.
 
+7. FOR "costAnalysis" (Monthly Cost Estimation):
+   Generate a "costAnalysis" array with EXACTLY 3 objects representing different user scales:
+   
+   SCALES (must include all 3):
+   1. "MVP / Hobby (0-100 Monthly Users)" - Prioritize FREE TIERS
+   2. "Growth (1,000-5,000 Monthly Users)" - Pro/paid tiers kick in
+   3. "Scale (10,000+ Monthly Users)" - Usage-based pricing dominates
+   
+   PRICING LOGIC RULES:
+   - **MVP:** Use FREE TIERS everywhere possible:
+     → Vercel Hobby: $0, Supabase Free: $0, Firebase Spark: $0, Railway Hobby: $0
+     → OpenAI: Estimate ~$0-2 for minimal usage
+     → RESULT: Usually $0 - $5/month total
+   
+   - **Growth:** Free tiers EXCEEDED, switch to Pro plans:
+     → Vercel Pro: $20/mo, Supabase Pro: $25/mo, Railway Pro: $5-20/mo
+     → Database: ~500MB-2GB storage, moderate queries
+     → OpenAI: ~$5-15 for 1,000-5,000 API calls
+     → Storage (S3/Cloudflare R2): ~$2-5 for 10GB
+     → RESULT: Usually $20 - $75/month total
+   
+   - **Scale:** Usage-based costs dominate:
+     → Database compute scaling: $50-100/mo
+     → API costs multiply: OpenAI ~$50-200, Stripe fees ~$100+
+     → CDN/Bandwidth: $20-50/mo
+     → RESULT: Usually $100 - $500+/month total
+   
+   FORMAT per scale object:
+   {
+     "scale": "MVP / Hobby (0-100 Monthly Users)",
+     "total": "$0",
+     "breakdown": [
+       { "service": "Vercel", "cost": "$0", "note": "Hobby Tier - 100GB bandwidth" },
+       { "service": "Supabase", "cost": "$0", "note": "Free Tier - 500MB DB, 2GB storage" }
+     ]
+   }
+   
+   BE REALISTIC: If stack includes OpenAI, estimate per-user token cost (~$0.002-0.02/user).
+   Include 3-6 services per breakdown. Always explain WHY in the "note" field.
+
+8. FOR "projectBreakdown" (Product Requirements Document - PRD):
+   Generate a DETAILED, PROFESSIONAL "projectBreakdown" object. Write like a Senior Product Manager creating a real PRD.
+   
+   REQUIRED FIELDS:
+   
+   A. **executiveSummary** (string): Write a 3-PARAGRAPH executive summary:
+      - Paragraph 1: The CORE PROBLEM. What pain point exists? Who suffers from it? Be specific with data if possible.
+      - Paragraph 2: The SOLUTION and "Secret Sauce". What does this app do differently? What's the unique value prop?
+      - Paragraph 3: The VISION. Where does this go in 2-3 years? What's the bigger picture?
+      Use "\\n\\n" to separate paragraphs.
+   
+   B. **userPersonas** (array): Define 2-3 detailed user personas:
+      Each object: { "role": "Persona Name (e.g. 'The Overwhelmed Freelancer')", "painPoints": ["Specific pain 1", "Specific pain 2", "Specific pain 3"], "motivation": "What drives this user to seek a solution?" }
+      BE SPECIFIC: "Struggles to track 5+ client projects" not "Has trouble organizing"
+   
+   C. **functionalRequirements** (array): List 4-6 core features as formal requirements:
+      Each object: { 
+        "id": "FR-01", 
+        "feature": "Feature Name", 
+        "userStory": "As a [specific user], I want to [specific action] so that [specific benefit].", 
+        "acceptanceCriteria": ["Testable criteria 1", "Testable criteria 2", "Testable criteria 3"], 
+        "priority": "High" | "Medium" | "Low" 
+      }
+      User stories MUST follow the exact format. Acceptance criteria must be TESTABLE.
+   
+   D. **nonFunctionalRequirements** (array of strings): List 3-5 NFRs:
+      Format: "Category: Specific requirement"
+      Examples: "Security: All data encrypted at rest (AES-256) and in transit (TLS 1.3)"
+                "Performance: Page load under 2 seconds on 3G connections"
+                "Scalability: Support 10,000 concurrent users without degradation"
+                "Accessibility: WCAG 2.1 AA compliance"
+   
+   E. **monetizationStrategy** (object): Detailed revenue model:
+      {
+        "model": "Specific model (e.g. 'B2B SaaS with usage-based pricing')",
+        "pricingTiers": [
+          { "name": "Free", "price": "$0/month", "features": ["Feature 1", "Feature 2"], "limits": "Up to X users/items" },
+          { "name": "Pro", "price": "$X/month", "features": ["Everything in Free", "Pro Feature 1"], "limits": "Up to Y" },
+          { "name": "Enterprise", "price": "Custom", "features": ["Everything in Pro", "SSO", "Dedicated support"], "limits": "Unlimited" }
+        ],
+        "revenueProjection": "Brief note on expected revenue path (e.g. 'Target $10K MRR within 12 months via SMB market')"
+      }
+   
+   F. **marketAnalysis** (object): Competitive landscape:
+      {
+        "competitors": [
+          { "name": "Competitor Name", "strengths": "What they do well", "weaknesses": "Where they fall short" }
+        ],
+        "differentiation": "Write a detailed paragraph (3-4 sentences) explaining the SPECIFIC competitive advantages. Include: 1) What gap in the market this fills, 2) Why existing solutions fail, 3) The 'unfair advantage' this app has."
+      }
+   
+   TONE: Professional, data-driven, like a real PRD that would be reviewed by engineering and stakeholders.
+
 EXAMPLE OUTPUT (Interconnected Master Graph):
-{
-  "title": "App Name",
+        {
+          "title": "App Name",
   "summary": "A [type] application using [Backend] for [reason]. Deployed on [PaaS] for simplicity.",
   "stack": ["React/Next.js", "Node.js/FastAPI/Spring Boot", "PostgreSQL/MongoDB", "Vercel/Railway"],
   "logicFlow": {
@@ -252,9 +349,132 @@ EXAMPLE OUTPUT (Interconnected Master Graph):
     { "name": "package.json", "type": "file", "description": "Project dependencies and npm scripts configuration" },
     { "name": "vite.config.js", "type": "file", "description": "Vite bundler configuration for development and build" },
     { "name": "tailwind.config.js", "type": "file", "description": "Tailwind CSS theme customization and plugin setup" }
-  ]
-}
-
+  ],
+  "costAnalysis": [
+    {
+      "scale": "MVP / Hobby (0-100 Monthly Users)",
+      "total": "$0",
+      "breakdown": [
+        { "service": "Vercel", "cost": "$0", "note": "Hobby Tier - 100GB bandwidth included" },
+        { "service": "Supabase", "cost": "$0", "note": "Free Tier - 500MB database, 1GB storage" },
+        { "service": "Auth", "cost": "$0", "note": "Supabase Auth included in free tier" }
+      ]
+    },
+    {
+      "scale": "Growth (1,000-5,000 Monthly Users)",
+      "total": "$45",
+      "breakdown": [
+        { "service": "Vercel", "cost": "$20", "note": "Pro Tier - Exceeded hobby bandwidth" },
+        { "service": "Supabase", "cost": "$25", "note": "Pro Tier - 8GB database, better performance" },
+        { "service": "Auth", "cost": "$0", "note": "Included in Supabase Pro" }
+      ]
+    },
+    {
+      "scale": "Scale (10,000+ Monthly Users)",
+      "total": "$175",
+      "breakdown": [
+        { "service": "Vercel", "cost": "$20", "note": "Pro Tier + ~$30 bandwidth overage" },
+        { "service": "Supabase", "cost": "$75", "note": "Pro + compute add-on for traffic" },
+        { "service": "CDN/Storage", "cost": "$25", "note": "Cloudflare R2 for static assets" },
+        { "service": "Monitoring", "cost": "$25", "note": "Sentry for error tracking at scale" }
+      ]
+    }
+  ],
+  "projectBreakdown": {
+    "executiveSummary": "Teams waste an average of 5 hours per week on task management overhead—switching between tools, updating statuses, and attending sync meetings. For a 10-person team, that's 2,600 hours annually lost to coordination instead of creation.\\n\\nTaskFlow solves this with AI-first project management. Our proprietary prioritization engine analyzes task dependencies, team capacity, and deadlines to automatically surface what matters most. Unlike Asana or Monday, we don't just organize tasks—we eliminate the cognitive load of deciding what to work on next.\\n\\nOur vision is to become the 'autopilot for team productivity.' Within 3 years, we aim to expand from task management into full workflow automation, where AI handles not just prioritization but also resource allocation, deadline negotiation, and cross-team coordination.",
+    "userPersonas": [
+      {
+        "role": "The Overwhelmed Team Lead",
+        "painPoints": [
+          "Spends 2+ hours daily updating task statuses across multiple tools",
+          "Constantly interrupted by 'quick questions' about priorities",
+          "Struggles to give accurate timeline estimates to stakeholders"
+        ],
+        "motivation": "Wants to focus on strategic work instead of administrative overhead"
+      },
+      {
+        "role": "The Remote Freelancer",
+        "painPoints": [
+          "Juggles 5+ client projects with different tools and workflows",
+          "Misses deadlines due to poor visibility across projects",
+          "Wastes time context-switching between client dashboards"
+        ],
+        "motivation": "Needs a single source of truth to manage multiple clients professionally"
+      }
+    ],
+    "functionalRequirements": [
+      {
+        "id": "FR-01",
+        "feature": "AI Task Prioritization",
+        "userStory": "As a team lead, I want tasks automatically ranked by urgency and dependencies so that my team always knows what to work on next without asking me.",
+        "acceptanceCriteria": [
+          "System analyzes due dates, blockers, and assignee workload",
+          "Priority score updates in real-time when dependencies change",
+          "Users can override AI suggestions with manual priority locks"
+        ],
+        "priority": "High"
+      },
+      {
+        "id": "FR-02",
+        "feature": "Real-time Collaboration",
+        "userStory": "As a remote team member, I want to see live updates from teammates so that I never work on outdated information.",
+        "acceptanceCriteria": [
+          "Changes sync across all clients within 500ms",
+          "Live cursors show who is viewing/editing each task",
+          "Offline changes merge automatically when reconnected"
+        ],
+        "priority": "High"
+      },
+      {
+        "id": "FR-03",
+        "feature": "Smart Integrations Hub",
+        "userStory": "As a developer, I want GitHub commits to automatically update task statuses so that I don't have to manually track progress.",
+        "acceptanceCriteria": [
+          "OAuth connection to GitHub, GitLab, Bitbucket",
+          "Commit messages with task IDs auto-link and update status",
+          "PR merges can trigger task completion workflows"
+        ],
+        "priority": "Medium"
+      },
+      {
+        "id": "FR-04",
+        "feature": "Workload Analytics Dashboard",
+        "userStory": "As a project manager, I want to visualize team capacity so that I can prevent burnout and balance assignments.",
+        "acceptanceCriteria": [
+          "Shows task load per team member with hour estimates",
+          "Alerts when any member exceeds 40-hour weekly threshold",
+          "Historical trends show productivity patterns over time"
+        ],
+        "priority": "Medium"
+      }
+    ],
+    "nonFunctionalRequirements": [
+      "Security: SOC 2 Type II compliant; all data encrypted at rest (AES-256) and in transit (TLS 1.3)",
+      "Performance: Dashboard loads under 1.5 seconds; real-time sync latency under 500ms globally",
+      "Scalability: Architecture supports 100,000 concurrent users with horizontal scaling",
+      "Availability: 99.9% uptime SLA with multi-region failover",
+      "Accessibility: WCAG 2.1 AA compliant; full keyboard navigation support"
+    ],
+    "monetizationStrategy": {
+      "model": "B2B SaaS with per-seat pricing and usage-based AI credits",
+      "pricingTiers": [
+        { "name": "Free", "price": "$0/month", "features": ["Up to 5 users", "Basic task management", "Limited integrations"], "limits": "50 AI prioritizations/month" },
+        { "name": "Pro", "price": "$12/user/month", "features": ["Unlimited users", "Advanced analytics", "All integrations", "Priority support"], "limits": "500 AI prioritizations/month" },
+        { "name": "Enterprise", "price": "Custom", "features": ["SSO/SAML", "Dedicated success manager", "Custom integrations", "On-premise option"], "limits": "Unlimited" }
+      ],
+      "revenueProjection": "Target 500 paying teams ($50K MRR) within 18 months via product-led growth in the SMB market"
+    },
+    "marketAnalysis": {
+      "competitors": [
+        { "name": "Asana", "strengths": "Strong brand, extensive integrations, enterprise features", "weaknesses": "Overwhelming UI, expensive at scale, no AI prioritization" },
+        { "name": "Linear", "strengths": "Beautiful UX, developer-focused, fast performance", "weaknesses": "Limited to software teams, no workload balancing, steep learning curve" },
+        { "name": "Monday.com", "strengths": "Highly customizable, good for non-technical teams", "weaknesses": "Slow performance, cluttered interface, high cost per seat" }
+      ],
+      "differentiation": "TaskFlow targets the underserved 'mid-market' of 10-100 person teams who find Asana too complex and Linear too developer-centric. Our AI-first approach eliminates the #1 complaint about project management tools: 'too much time spent managing the tool itself.' Unlike competitors who bolt on AI features, our prioritization engine is core to the product—every interaction makes it smarter. Combined with aggressive pricing ($12/seat vs $25+ for Asana Business), we capture teams graduating from free tools who aren't ready for enterprise complexity."
+    }
+  }
+        }
+        
 User Idea: ${prompt}`;
 
       const result = await model.generateContent(systemPrompt);
@@ -277,8 +497,10 @@ User Idea: ${prompt}`;
   };
 
   const tabs = [
+    { id: "breakdown", label: "App Manifest", icon: BookOpen },
     { id: "flow", label: "System Architecture", icon: Layers },
     { id: "schema", label: "Database Schema", icon: Database },
+    { id: "costs", label: "Cost Analysis", icon: DollarSign },
   ];
 
   // Get current diagram data based on active tab
@@ -729,7 +951,23 @@ User Idea: ${prompt}`;
             ref={canvasContainerRef}
             className="flex-1 relative overflow-hidden flex"
           >
-            {result && currentDiagram.nodes?.length > 0 ? (
+            {/* App Manifest Tab */}
+            {activeTab === "breakdown" && result ? (
+              <div className="w-full h-full">
+                <ProjectManifest
+                  data={result.projectBreakdown}
+                  isDarkMode={isDarkMode}
+                />
+              </div>
+            ) : /* Cost Analysis Tab */
+            activeTab === "costs" && result ? (
+              <div className="w-full h-full">
+                <CostEstimator
+                  data={result.costAnalysis}
+                  isDarkMode={isDarkMode}
+                />
+              </div>
+            ) : result && currentDiagram.nodes?.length > 0 ? (
               <>
                 {/* Diagram Panel */}
                 <div

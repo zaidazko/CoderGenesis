@@ -196,7 +196,7 @@ body {
   cursor: col-resize;
   top: 0;
   bottom: 0;
-}
+  }
 
 .resize-handle-horizontal:hover,
 .resize-handle-horizontal:active {
@@ -212,7 +212,7 @@ body {
 /* Disable ALL transitions during resize for butter-smooth dragging */
 .resizing .resizable-panel {
   transition: none !important;
-}
+  }
 
 /* Resizable panel base class */
 .resizable-panel {
